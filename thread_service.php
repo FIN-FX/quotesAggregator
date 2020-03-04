@@ -1,0 +1,19 @@
+<?php
+// fcgi doesn't have STDIN and STDOUT defined by default
+defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
+defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
+
+defined('YII_DEBUG') or define('YII_DEBUG', false);
+defined('YII_ENV') or define('YII_ENV', YII_DEBUG ? 'dev' : 'prod');
+
+require(__DIR__ . '/vendor/autoload.php');
+require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+
+$config = yii\helpers\ArrayHelper::merge(
+    require(__DIR__ . '/app/config/main.php'),
+    file_exists(__DIR__ . '/app/config/main-local.php') ? require(__DIR__ . '/app/config/main-local.php') : [],
+    ['controllerMap' => ['controller' => "app\\Controller"]]
+);
+
+$application = new \yii\console\Application($config);
+$exitCode = $application->run();
